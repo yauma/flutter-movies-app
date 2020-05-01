@@ -19,12 +19,12 @@ class CardSwipe extends StatelessWidget {
           return ClipRRect(
               borderRadius: BorderRadius.circular(30.0),
               child: FadeInImage.assetNetwork(
-                placeholder: 'assets/no-image.gif',
+                placeholder: 'lib/assets/images/no-image.jpg',
                 image: imageUrl,
                 fit: BoxFit.fill,
               ));
         },
-        itemWidth: _screenSize.width * 0.7,
+        itemWidth: _screenSize.width * 0.6,
         itemHeight: _screenSize.height * 0.5,
         itemCount: 10,
         layout: SwiperLayout.STACK,

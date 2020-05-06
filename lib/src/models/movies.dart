@@ -64,7 +64,24 @@ class Movie {
   }
 
   String getPosterPath() {
-    final posterUrl = "https://image.tmdb.org/t/p/w500/$posterPath";
+    String posterUrl;
+    if (posterPath == null) {
+      posterUrl =
+          "https://cdn3.iconfinder.com/data/icons/abstract-1/512/no_image-512.png";
+    } else {
+      posterUrl = "https://image.tmdb.org/t/p/w500/$posterPath";
+    }
+    return posterUrl;
+  }
+
+  String getBackdropPath() {
+    String posterUrl;
+    if (backdropPath == null) {
+      posterUrl =
+          "https://cdn3.iconfinder.com/data/icons/abstract-1/512/no_image-512.png";
+    } else {
+      posterUrl = "https://image.tmdb.org/t/p/w500/$backdropPath";
+    }
     return posterUrl;
   }
 }

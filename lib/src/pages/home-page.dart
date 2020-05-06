@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     moviesProvider.getPopular();
     return SafeArea(
-          child: Scaffold(
+      child: Scaffold(
         appBar: AppBar(
           title: Text("Movie"),
           actions: <Widget>[
@@ -58,12 +58,11 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: 5),
         StreamBuilder(
           stream: moviesProvider.popularStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<Movie>> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<List<Movie>> snapshot) {
             if (snapshot.hasData) {
-              return HorizontalMovies(movies: snapshot.data,
-              nextPageCallback:
-              moviesProvider.getPopular);
+              return HorizontalMovies(
+                  movies: snapshot.data,
+                  nextPageCallback: moviesProvider.getPopular);
             } else {
               return Container(
                   child: Center(child: CircularProgressIndicator()));

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttermovieapp/src/models/cast.dart';
 import 'package:fluttermovieapp/src/models/movies.dart';
+import 'package:fluttermovieapp/src/provider/casting_provider.dart';
 
 class MovieDetail extends StatelessWidget {
   @override
@@ -43,7 +45,7 @@ class MovieDetail extends StatelessWidget {
       SizedBox(height: 10.0),
       _movieHeader(movie, context),
       _movieBody(movie, context),
-      _actorsFooter()
+      _actorsFooter(movie.id.toString(), context),
     ]));
   }
 
@@ -104,9 +106,45 @@ class MovieDetail extends StatelessWidget {
     );
   }
 
-  Widget _actorsFooter() {
-    return Container(
-      child: Text("Footer"),
+  Widget _actorsFooter(String movieId, BuildContext context) {
+    final castingProvider = CastingProvider();
+    return FutureBuilder(
+      future: castingProvider.getCasting(movieId),
+      builder: (BuildContext context, AsyncSnapshot<List<Cast>> snapshot) {
+        if (snapshot.data != null) {
+          return castingCards(context, snapshot.data);
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
+  }
+
+  Widget castingCards(BuildContext context, List<Cast> casting) {
+    return Container(
+        height: MediaQuery.of(context).size.height * 0.3,
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: casting.length,
+            itemBuilder: (context, index) {
+              Cast cast = casting[index];
+              return Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: FadeInImage.assetNetwork(
+                        height: 150,
+                        placeholder: 'lib/assets/images/no-image.jpg',
+                        image: cast.getPosterPath(),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Text(cast.name, overflow: TextOverflow.ellipsis),
+                  ],
+                ),
+              );
+            }));
   }
 }

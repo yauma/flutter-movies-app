@@ -6,8 +6,6 @@ import 'package:http/http.dart' as http;
 class CastingProvider {
   String _apiKey = "9bc3a7bc8d59c59f5ce6afa05f9a3d60";
   String _url = "api.themoviedb.org";
-  String _language = "es-ES";
-  int _page = 0;
   bool _isLoading = false;
 
   Future<List<Cast>> getCasting(String movieId) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttermovieapp/src/delegate/DataSearchDelegate.dart';
 import 'package:fluttermovieapp/src/models/movies.dart';
 import 'package:fluttermovieapp/src/provider/movies_provider.dart';
 import 'package:fluttermovieapp/src/widgets/card_swipe_widget.dart';
@@ -18,9 +19,16 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Movie"),
+          title: Center(child: Text("Popular Movies")),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.search), onPressed: () {})
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(
+                    context: context,
+                    delegate: DataSearchDelegate(),
+                  );
+                })
           ],
         ),
         body: Column(
@@ -59,13 +67,13 @@ class _HomePageState extends State<HomePage> {
         StreamBuilder(
           stream: moviesProvider.popularStream,
           builder: (BuildContext context, AsyncSnapshot<List<Movie>> snapshot) {
-            if (snapshot.hasData) {
+            if (!snapshot.hasData) {
+              return Container(
+                  child: Center(child: CircularProgressIndicator()));
+            } else {
               return HorizontalMovies(
                   movies: snapshot.data,
                   nextPageCallback: moviesProvider.getPopular);
-            } else {
-              return Container(
-                  child: Center(child: CircularProgressIndicator()));
             }
           },
         ),

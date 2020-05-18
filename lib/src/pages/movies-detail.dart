@@ -3,13 +3,30 @@ import 'package:fluttermovieapp/src/models/cast.dart';
 import 'package:fluttermovieapp/src/models/movies.dart';
 import 'package:fluttermovieapp/src/provider/casting_provider.dart';
 
-class MovieDetail extends StatelessWidget {
+class MovieDetail extends StatefulWidget {
+  @override
+  _MovieDetailState createState() => _MovieDetailState();
+}
+
+class _MovieDetailState extends State<MovieDetail> {
+  Movie movie;
+  ScrollController _controller;
+  bool silverCollapsed = false;
+  String myTitle = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ScrollController();
+    _controller.addListener(myScrollListener);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Movie movie = ModalRoute.of(context).settings.arguments;
-
+    movie = ModalRoute.of(context).settings.arguments;
     return Scaffold(
         body: CustomScrollView(
+      controller: _controller,
       slivers: <Widget>[
         _crearAppBar(movie, context),
         _sliverList(movie, context),
@@ -19,6 +36,12 @@ class MovieDetail extends StatelessWidget {
 
   Widget _crearAppBar(Movie movie, BuildContext context) {
     return SliverAppBar(
+      title: Center(
+        child: Text(
+          myTitle,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       elevation: 20.0,
       backgroundColor: ThemeData.light().primaryColor,
       expandedHeight: 200,
@@ -26,10 +49,6 @@ class MovieDetail extends StatelessWidget {
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
-        title: Text(
-          movie.title,
-          style: Theme.of(context).textTheme.title,
-        ),
         background: FadeInImage(
           placeholder: AssetImage('lib/assets/images/loading.gif'),
           image: NetworkImage(movie.getBackdropPath()),
@@ -45,6 +64,10 @@ class MovieDetail extends StatelessWidget {
       SizedBox(height: 10.0),
       _movieHeader(movie, context),
       _movieBody(movie, context),
+      _movieBody(movie, context),
+      _movieBody(movie, context),
+      _movieBody(movie, context),
+      _movieBody(movie, context),
       _actorsFooter(movie.id.toString(), context),
     ]));
   }
@@ -55,13 +78,16 @@ class MovieDetail extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: FadeInImage.assetNetwork(
-              height: 150,
-              placeholder: 'lib/assets/images/no-image.jpg',
-              image: movie.getPosterPath(),
-              fit: BoxFit.cover,
+          Hero(
+            tag: movie.uniqueId,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: FadeInImage.assetNetwork(
+                height: 150,
+                placeholder: 'lib/assets/images/no-image.jpg',
+                image: movie.getPosterPath(),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(width: 20.0),
@@ -146,5 +172,26 @@ class MovieDetail extends StatelessWidget {
                 ),
               );
             }));
+  }
+
+  void myScrollListener() {
+    if (_controller.offset > 220 && !_controller.position.outOfRange) {
+      if (!silverCollapsed) {
+        // do what ever you want when silver is collapsing !
+
+        myTitle = movie.title;
+        silverCollapsed = true;
+        setState(() {});
+      }
+    }
+    if (_controller.offset <= 220 && !_controller.position.outOfRange) {
+      if (silverCollapsed) {
+        // do what ever you want when silver is expanding !
+
+        myTitle = "";
+        silverCollapsed = false;
+        setState(() {});
+      }
+    }
   }
 }

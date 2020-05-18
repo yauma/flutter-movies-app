@@ -11,24 +11,34 @@ class CardSwipe extends StatelessWidget {
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
 
-    return Container(
+    var container = Container(
       padding: EdgeInsets.only(top: 10.0),
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
-          final imageUrl = movies[index].getPosterPath();
-          return ClipRRect(
-              borderRadius: BorderRadius.circular(30.0),
-              child: FadeInImage.assetNetwork(
-                placeholder: 'lib/assets/images/no-image.jpg',
-                image: imageUrl,
-                fit: BoxFit.fill,
-              ));
+          Movie movie = movies[index];
+          movie.uniqueId = '${movie.id}-swipe';
+          return GestureDetector(
+            child: Hero(
+              tag: movie.uniqueId,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: FadeInImage(
+                    placeholder: AssetImage('lib/assets/images/no-image.jpg'),
+                    image: NetworkImage(movies[index].getPosterPath()),
+                    fit: BoxFit.fill,
+                  )),
+            ),
+            onTap: () {
+              Navigator.pushNamed(context, 'detail', arguments: movie);
+            },
+          );
         },
-        itemWidth: _screenSize.width * 0.6,
+        itemWidth: _screenSize.width * 0.7,
         itemHeight: _screenSize.height * 0.5,
         itemCount: 10,
         layout: SwiperLayout.STACK,
       ),
     );
+    return container;
   }
 }
